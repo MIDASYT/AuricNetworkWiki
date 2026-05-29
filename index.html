@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuricNetwork | Official Wiki</title>
+    <link rel="icon" type="image/png" href="portada.png">
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #FFD700; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ffea00; }
+
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 250px; 
+            background-color: #0a0a0a;
+            padding: 20px 0;
+            border-right: 2px solid #222;
+            overflow-y: auto;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: radial-gradient(circle, rgba(0, 150, 255, 0.3) 0%, rgba(10, 10, 10, 0) 75%);
+        }
+
+        .logo-container img {
+            width: 220px; 
+            height: auto;
+            filter: drop-shadow(0px 0px 10px #00aaff);
+            margin-bottom: 10px;
+        }
+
+        .sidebar h2 {
+            color: #FFD700; 
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 0px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu-btn {
+            background: none; border: none; color: #b3b3b3; padding: 15px 25px;
+            width: 100%; text-align: left; font-size: 1em; cursor: pointer;
+            transition: 0.3s; display: block; border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+        
+        .menu-btn:hover, .menu-btn.activo { 
+            background-color: rgba(255, 215, 0, 0.05); 
+            border-left: 4px solid #FFD700; 
+            color: #ffffff;
+        }
+
+        .contenido-principal {
+            margin-left: 250px;
+            min-height: 100vh;
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start;
+            padding: 50px 30px; 
+            box-sizing: border-box; 
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .seccion {
+            display: none; 
+            background-color: #1a1a1a;
+            max-width: 850px;
+            width: 100%; 
+            padding: 40px 50px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid #2a2a2a;
+            box-sizing: border-box; 
+            animation: aparecer 0.4s ease-out;
+        }
+
+        h1 { color: #FFD700; font-size: 2.2em; margin-top: 0; border-bottom: 2px solid #333; padding-bottom: 10px;}
+        h2 { color: #FFD700; margin-top: 30px; font-size: 1.5em; }
+        h3 { color: #ffffff; margin-top: 30px; font-size: 1.2em; border-left: 3px solid #FFD700; padding-left: 10px;}
+        p { line-height: 1.6; font-size: 1.05em; color: #cccccc;}
+        ul { line-height: 1.8; color: #cccccc; font-size: 1.05em;}
+        
+        code { 
+            background-color: #242424; 
+            padding: 4px 8px; 
+            border-radius: 6px; 
+            color: #FFD700; 
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid #333;
+        }
+
+        pre {
+            background-color: #121212;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            color: #FFD700;
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .feature-box {
+            background-color: #222222;
+            border-left: 3px solid #FFD700;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        details {
+            background-color: #1f1f1f;
+            border-left: 3px solid #FFD700;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        summary {
+            color: #FFD700;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05em;
+            outline: none;
+        }
+
+        .botones-zona { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px; }
+        .boton { display: inline-block; padding: 12px 25px; font-weight: bold; text-decoration: none; border-radius: 8px; transition: transform 0.2s; font-size: 0.95em; }
+        .boton:hover { transform: translateY(-3px); }
+        .btn-discord { background-color: #5865F2; color: white; }
+        .btn-modrinth { background-color: #1bd96a; color: #000; }
+        .btn-youtube { background-color: #FF0000; color: white; }
+
+        @media (max-width: 800px) {
+            .sidebar { position: relative; width: 100%; height: auto; border-right: none; border-bottom: 2px solid #FFD700; }
+            .contenido-principal { margin-left: 0; padding: 20px; }
+            .seccion { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="logo-container">
+            <img src="portada.png" alt="AuricNetwork Logo">
+            <h2>AuricNetwork Wiki</h2>
+        </div>
+        <button class="menu-btn activo" onclick="cambiarSeccion('inicio', this)">🌟 Overview</button>
+        <button class="menu-btn" onclick="cambiarSeccion('features', this)">✨ Features</button>
+        <button class="menu-btn" onclick="cambiarSeccion('comandos', this)">⚙️ Commands</button>
+        <button class="menu-btn" onclick="cambiarSeccion('permisos', this)">👑 Permissions</button>
+        <button class="menu-btn" onclick="cambiarSeccion('configuracion', this)">📄 Configuration</button>
+        <button class="menu-btn" onclick="cambiarSeccion('rescue', this)">🆘 Rescue Server</button>
+    </nav>
+
+    <main class="contenido-principal">
+        
+        <div id="inicio" class="seccion" style="display: block;">
+            <h1>🌟 AuricNetwork</h1>
+            <p><strong>Zero-Proxy Network System</strong></p>
+            <p>AuricNetwork allows you to create a full Minecraft server network <strong>without any proxy</strong> (BungeeCord, Velocity). It uses Paper's native <code>Player#transfer</code> method (1.20.5+) to move players directly between servers. <strong>Important:</strong> On the target server, you must set <code>accepts-transfers=true</code> in its <code>server.properties</code> file.</p>
+            
+            <div class="botones-zona">
+                <a href="https://modrinth.com/plugin/auricnetwork" class="boton btn-modrinth" target="_blank">Download on Modrinth</a>
+                <a href="https://discord.gg/GJRXZk8jEn" class="boton btn-discord" target="_blank">Discord Support</a>
+                <a href="https://youtube.com/@midasyt.?si=HLdUw3wF6SHtV8cE" class="boton btn-youtube" target="_blank">YouTube Channel</a>
+            </div>
+        </div>
+
+        <div id="features" class="seccion">
+            <h1>✨ Key Features</h1>
+            <div class="feature-box">
+                <strong>No Proxy Required:</strong> Direct server‑to‑server transfers using <code>Player#transfer()</code>.
+            </div>
+            <div class="feature-box">
+                <strong>Graphical Server Selector:</strong> Fully customizable chest GUI with player head, online player count and server status placeholders.
+            </div>
+            <div class="feature-box">
+                <strong>Rescue Server (Fallback):</strong> On graceful shutdown, all online players are automatically moved to a configured rescue server. Console logs detail the transfer.
+            </div>
+            <div class="feature-box">
+                <strong>Multi‑Lobby Balancing:</strong> <code>/lobby</code> can send players to a random lobby from a list – ideal for large networks.
+            </div>
+            <div class="feature-box">
+                <strong>Join & Respawn Spawns:</strong> Set teleport locations for join and respawn events.
+            </div>
+            <div class="feature-box">
+                <strong>Live Server Status:</strong> Fetches real‑time online players and online/offline/full status via <code>api.mcsrvstat.us</code>.
+            </div>
+        </div>
+
+        <div id="comandos" class="seccion">
+            <h1>⚙️ Commands</h1>
+            <ul>
+                <li><code>/auricnetwork reload</code> - Reloads config and language files. <br><small>Permission: <code>auricnetwork.admin</code></small></li>
+                <li><code>/auricnetwork menu</code> - Opens the server selector GUI. <br><small>Permission: <code>auricnetwork.menu</code></small></li>
+                <li><code>/auricnetwork setjoinspawn</code> - Sets the join spawn at your current location. <br><small>Permission: <code>auricnetwork.admin</code></small></li>
+                <li><code>/auricnetwork setrespawnspawn</code> - Sets the respawn spawn at your current location. <br><small>Permission: <code>auricnetwork.admin</code></small></li>
+                <li><code>/server &lt;name&gt;</code> - Transfers you to another server. <br><small>Permission: <code>auricnetwork.server</code></small></li>
+                <li><code>/spawn [join|respawn]</code> - Teleports to the configured spawn point. <br><small>Permission: <code>auricnetwork.spawn</code></small></li>
+                <li><code>/lobby</code> or <code>/hub</code> - Sends you to the lobby (supports random balancing). <br><small>Permission: <code>auricnetwork.lobby</code></small></li>
+            </ul>
+        </div>
+
+        <div id="permisos" class="seccion">
+            <h1>👑 Permissions</h1>
+            <ul>
+                <li><code>auricnetwork.admin</code> - Reload command, set spawns, update notifications.</li>
+                <li><code>auricnetwork.server</code> - Use <code>/server</code> to transfer.</li>
+                <li><code>auricnetwork.menu</code> - Open the server selector GUI.</li>
+                <li><code>auricnetwork.spawn</code> - Use <code>/spawn</code>.</li>
+                <li><code>auricnetwork.lobby</code> - Use <code>/lobby</code> or <code>/hub</code>.</li>
+            </ul>
+        </div>
+
+        <div id="configuracion" class="seccion">
+            <h1>📄 Configuration Guide</h1>
+            <p>The <code>config.yml</code> file controls every aspect of AuricNetwork. Below is a detailed explanation of each section.</p>
+
+            <h3>🌐 Servers</h3>
+            <p>List all servers in your network. The key is the name used in commands and the menu, the value is the IP:port.</p>
+            <details>
+                <summary>Click to view code</summary>
+<pre>
+servers:
+  lobby: "127.0.0.1:25565"
+  survival: "127.0.0.1:25566"
+</pre>
+            </details>
+
+            <h3>🎮 Transfer Immersion</h3>
+            <p>Delay before transfer (in seconds), sound effect, and volume fade‑out.</p>
+            <details>
+                <summary>Click to view code</summary>
+<pre>
+transfer_immersion:
+  delay: 3.0
+  sound:
+    enabled: true
+    sound_id: "block.amethyst_block.hit"
+    fade_out: true
+</pre>
+            </details>
+
+            <h3>🌍 Language</h3>
+            <p>Set <code>en</code> (English) or <code>es</code> (Spanish). Leave empty to auto‑detect from the player's client.</p>
+            <details>
+                <summary>Click to view code</summary>
+<pre>
+language: "en"
+</pre>
+            </details>
+
+            <h3>🏠 Join & Respawn Spawn</h3>
+            <p>Enable and set coordinates for where players spawn when they join or respawn.</p>
+            <details>
+                <summary>Click to view code</summary>
+<pre>
+join_spawn:
+  enabled: false
+  world: "world"
+  x: 0.5
+  y: 64.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+
+respawn_spawn:
+  enabled: false
+  world: "world"
+  x: 0.5
+  y: 64.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+</pre>
+            </details>
+
+            <h3>🔄 Lobby Balancing</h3>
+            <p>If enabled, <code>/lobby</code> will send the player to a random server from the list instead of the default <code>lobby</code>.</p>
+            <details>
+                <summary>Click to view code</summary>
+<pre>
+lobby:
+  enabled: false
+  servers:
+    - "lobby1"
+    - "lobby2"
+</pre>
+            </details>
+
+            <h3>📡 Server Status API</h3>
+            <p>Fetches live player counts and online status from <code>api.mcsrvstat.us</code>. Update interval in seconds.</p>
+            <details>
+                <summary>Click to view code</summary>
+<pre>
+server_status_api:
+  enabled: false
+  update_interval_seconds: 60
+</pre>
+            </details>
+        </div>
+
+        <div id="rescue" class="seccion">
+            <h1>🆘 Rescue Server (Fallback)</h1>
+            <p>When a server shuts down gracefully (e.g., <code>/stop</code> or a restart), AuricNetwork automatically transfers all online players to a configured rescue server. This prevents disconnections and improves user experience.</p>
+            <p>The fallback logs a detailed message to the console:</p>
+            <pre>
+========================================
+[AuricNetwork] Rescue server active!
+Transferred 12 players to lobby (127.0.0.1:25565)
+Server is shutting down gracefully.
+========================================</pre>
+            <p>To enable it, add to <code>config.yml</code>:</p>
+            <details>
+                <summary>Click to view code</summary>
+<pre>
+rescue_server:
+  enabled: true
+  target: "lobby"
+</pre>
+            </details>
+            <p><strong>Note:</strong> Works only on controlled shutdowns (not on crashes or <code>kill -9</code>).</p>
+        </div>
+
+    </main>
+
+    <script>
+        function cambiarSeccion(idSeccion, boton) {
+            var secciones = document.getElementsByClassName('seccion');
+            for (var i = 0; i < secciones.length; i++) {
+                secciones[i].style.display = 'none';
+            }
+            
+            var botones = document.getElementsByClassName('menu-btn');
+            for (var i = 0; i < botones.length; i++) {
+                botones[i].classList.remove('activo');
+            }
+            
+            document.getElementById(idSeccion).style.display = 'block';
+            boton.classList.add('activo');
+        }
+    </script>
+</body>
+</html>
