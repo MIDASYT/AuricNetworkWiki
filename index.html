@@ -1,0 +1,2900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auric Network — Official Wiki</title>
+    <meta name="description" content="Auric Network — Zero-Proxy Network System for Minecraft. Create a full server network without BungeeCord or Velocity using Paper's native Player#transfer method.">
+    <link rel="icon" type="image/png" href="portada.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           Auric Network Wiki — Design System
+           Dual-tone palette: Auric gold (brand) + Network celeste
+           ============================================================ */
+
+        :root {
+            /* Surfaces */
+            --bg: #0a0a0c;
+            --bg-elevated: #111116;
+            --surface: #15151c;
+            --surface-2: #1c1c25;
+            --surface-3: #24242f;
+            --border: #2a2a36;
+            --border-strong: #3a3a48;
+
+            /* Text */
+            --text: #ececf1;
+            --text-muted: #a0a0ad;
+            --text-dim: #6c6c79;
+
+            /* Brand — Auric gold (for "Auric") */
+            --gold: #f4cf3d;
+            --gold-bright: #fef580;
+            --gold-deep: #d16a0c;
+            --gold-soft: rgba(244, 207, 61, 0.12);
+            --gold-line: rgba(244, 207, 61, 0.32);
+
+            /* Brand — Network celeste (for "Network") */
+            --celeste: #5cc0cb;
+            --celeste-bright: #7ddde6;
+            --celeste-deep: #2a8a94;
+            --celeste-soft: rgba(92, 192, 203, 0.12);
+            --celeste-line: rgba(92, 192, 203, 0.32);
+
+            /* Accents */
+            --modrinth: #1bd96a;
+            --discord: #5865F2;
+            --youtube: #FF0000;
+
+            /* Effects */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.6);
+            --shadow-gold: 0 0 0 1px rgba(244, 207, 61, 0.15), 0 8px 32px rgba(244, 207, 61, 0.06);
+            --shadow-celeste: 0 0 0 1px rgba(92, 192, 203, 0.15), 0 8px 32px rgba(92, 192, 203, 0.06);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 22px;
+
+            --sidebar-w: 288px;
+            --content-max: 1080px;
+
+            --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(ellipse 800px 600px at 80% -10%, rgba(92, 192, 203, 0.07), transparent 60%),
+                radial-gradient(ellipse 600px 500px at 0% 100%, rgba(244, 207, 61, 0.05), transparent 60%);
+            background-attachment: fixed;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface-3);
+            border-radius: 10px;
+            border: 2px solid var(--bg);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+        ::selection { background: rgba(92, 192, 203, 0.3); color: #fff; }
+
+        /* ============================================================
+           Sidebar
+           ============================================================ */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: var(--sidebar-w);
+            background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg) 100%);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 32px 24px 24px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 192px;
+            height: 192px;
+            margin: 0 auto 16px;
+            background: radial-gradient(circle, rgba(92, 192, 203, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .logo-wrap img {
+            width: 144px;
+            height: 144px;
+            filter: drop-shadow(0 4px 16px rgba(92, 192, 203, 0.45));
+            animation: logoFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .sidebar-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text);
+        }
+
+        .sidebar-title .accent-gold {
+            background: linear-gradient(120deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-deep) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-title .accent-celeste {
+            background: linear-gradient(120deg, var(--celeste-bright) 0%, var(--celeste) 50%, var(--celeste-deep) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-subtitle {
+            margin: 4px 0 0;
+            font-size: 12px;
+            color: var(--text-dim);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 4px 10px;
+            background: var(--celeste-soft);
+            border: 1px solid var(--celeste-line);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--celeste-bright);
+            letter-spacing: 0.02em;
+        }
+
+        .version-badge::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: var(--celeste);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--celeste);
+        }
+
+        .nav-section-label {
+            padding: 24px 24px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .nav-list { list-style: none; padding: 0; margin: 0; }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 11px 24px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s var(--ease), background 0.2s var(--ease);
+            border-left: 2px solid transparent;
+        }
+
+        .nav-btn:hover {
+            color: var(--text);
+            background: rgba(92, 192, 203, 0.04);
+        }
+
+        .nav-btn.active {
+            color: var(--celeste-bright);
+            background: linear-gradient(90deg, rgba(92, 192, 203, 0.08), transparent);
+            border-left-color: var(--celeste);
+        }
+
+        .nav-btn .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+
+        .nav-btn.active .nav-icon { opacity: 1; color: var(--celeste); }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px 24px 28px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sidebar-footer-text {
+            font-size: 11px;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .sidebar-footer-text a {
+            color: #5865F2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .sidebar-footer-text a:hover { text-decoration: underline; color: #7984f5; }
+
+        /* ============================================================
+           Main content
+           ============================================================ */
+        .main {
+            margin-left: var(--sidebar-w);
+            min-height: 100vh;
+            padding: 56px 48px 96px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .content {
+            width: 100%;
+            max-width: var(--content-max);
+        }
+
+        /* Top bar — breadcrumb + external links */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding: 12px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            backdrop-filter: blur(10px);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .breadcrumb .crumb-current {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .breadcrumb .sep {
+            color: var(--celeste);
+            opacity: 0.6;
+        }
+
+        .topbar-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s var(--ease);
+        }
+
+        .topbar-link:hover {
+            color: var(--text);
+            background: var(--surface-2);
+        }
+
+        .topbar-link svg { width: 14px; height: 14px; }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: sectionIn 0.45s var(--ease);
+        }
+
+        .section.active { display: block; }
+
+        @keyframes sectionIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Headings */
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--celeste);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 0 0 12px;
+        }
+
+        .section-eyebrow::before {
+            content: '';
+            width: 18px;
+            height: 1px;
+            background: var(--celeste);
+        }
+
+        h1.section-title {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+            margin: 0 0 16px;
+            color: var(--text);
+        }
+
+        h1.section-title .accent-gold {
+            background: linear-gradient(120deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-deep) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1.section-title .accent-celeste {
+            background: linear-gradient(120deg, var(--celeste-bright) 0%, var(--celeste) 50%, var(--celeste-deep) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-lead {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 0 32px;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            color: var(--text);
+            margin: 48px 0 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 .hash {
+            color: var(--celeste);
+            font-weight: 400;
+            opacity: 0.6;
+            font-size: 0.9em;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 28px 0 10px;
+        }
+
+        p { color: var(--text-muted); margin: 0 0 16px; }
+
+        strong { color: var(--text); font-weight: 600; }
+
+        em { color: var(--text-muted); font-style: italic; }
+
+        ul { color: var(--text-muted); padding-left: 4px; margin: 0 0 16px; list-style: none; }
+
+        ul li {
+            position: relative;
+            padding-left: 22px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 11px;
+            width: 6px;
+            height: 6px;
+            background: var(--celeste);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(92, 192, 203, 0.5);
+        }
+
+        a.text-link {
+            color: var(--celeste);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(92, 192, 203, 0.3);
+            transition: border-color 0.2s var(--ease);
+        }
+
+        a.text-link:hover { border-bottom-color: var(--celeste); }
+
+        /* Inline code */
+        code {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.88em;
+            background: var(--surface-2);
+            color: var(--celeste-bright);
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: #0d0d12;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin: 16px 0 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .code-block-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-block-lang {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .code-block-lang::before {
+            content: '';
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: var(--celeste);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--celeste);
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-dim);
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
+        }
+
+        .copy-btn:hover {
+            color: var(--celeste);
+            border-color: var(--celeste-line);
+            background: var(--celeste-soft);
+        }
+
+        .copy-btn.copied {
+            color: var(--modrinth);
+            border-color: rgba(27, 217, 106, 0.4);
+            background: rgba(27, 217, 106, 0.08);
+        }
+
+        .copy-btn svg { width: 12px; height: 12px; }
+
+        .code-block pre {
+            margin: 0;
+            padding: 18px 20px;
+            background: transparent;
+            border: none;
+            color: #d8d8e0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+
+        /* Syntax coloring */
+        .code-block pre .k { color: var(--gold); }
+        .code-block pre .s { color: #9ae6b4; }
+        .code-block pre .n { color: #f6ad55; }
+        .code-block pre .c { color: var(--text-dim); font-style: italic; }
+        .code-block pre .t { color: var(--celeste-bright); }
+        .code-block pre .v { color: #cbd5e0; }
+
+        /* ============================================================
+           Hero
+           ============================================================ */
+        .hero {
+            position: relative;
+            padding: 56px 48px;
+            background:
+                radial-gradient(ellipse 600px 300px at 0% 0%, rgba(92, 192, 203, 0.08), transparent 60%),
+                linear-gradient(135deg, var(--surface) 0%, var(--bg-elevated) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(92, 192, 203, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--celeste-soft);
+            border: 1px solid var(--celeste-line);
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--celeste-bright);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 24px;
+        }
+
+        .hero-eyebrow .dot {
+            width: 6px; height: 6px;
+            background: var(--celeste);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--celeste);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            margin: 0 0 16px;
+            color: var(--text);
+        }
+
+        .hero h1 .accent-gold {
+            background: linear-gradient(120deg, var(--gold-bright) 0%, var(--gold) 45%, var(--gold-deep) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 .accent-celeste {
+            background: linear-gradient(120deg, var(--celeste-bright) 0%, var(--celeste) 45%, var(--celeste-deep) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 19px;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 0 16px;
+            line-height: 1.5;
+        }
+
+        .hero-tagline {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 28px;
+        }
+
+        .hero-tagline .tag-gold { color: var(--gold); }
+        .hero-tagline .tag-sep { color: var(--text-dim); margin: 0 6px; }
+        .hero-tagline .tag-celeste { color: var(--celeste); }
+
+        .hero-description {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 0 32px;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 22px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all 0.2s var(--ease);
+            cursor: pointer;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--celeste-bright) 0%, var(--celeste) 50%, var(--celeste-deep) 100%);
+            color: #0a1a1c;
+            box-shadow: 0 4px 14px rgba(92, 192, 203, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(92, 192, 203, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+        }
+
+        .btn-secondary {
+            background: var(--surface-2);
+            color: var(--text);
+            border-color: var(--border-strong);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            background: var(--surface-3);
+            border-color: var(--celeste-line);
+        }
+
+        .btn-discord {
+            background: linear-gradient(135deg, #7984f5 0%, #5865F2 50%, #3c45a8 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(88, 101, 242, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+        .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(88, 101, 242, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+
+        .btn-youtube {
+            background: linear-gradient(135deg, #ff4d4d 0%, #FF0000 50%, #a30000 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(255, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+        .btn-youtube:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+
+        /* ============================================================
+           Feature grid
+           ============================================================ */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .feature-card {
+            position: relative;
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: all 0.25s var(--ease);
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--celeste), transparent);
+            opacity: 0;
+            transition: opacity 0.3s var(--ease);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--celeste-line);
+            background: var(--surface-2);
+            box-shadow: var(--shadow-celeste);
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--celeste-soft);
+            border: 1px solid var(--celeste-line);
+            border-radius: var(--radius-md);
+            color: var(--celeste);
+            margin-bottom: 14px;
+        }
+
+        .feature-icon svg { width: 22px; height: 22px; }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 0 8px;
+        }
+
+        .feature-desc {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .feature-desc code { font-size: 0.85em; }
+
+        /* ============================================================
+           Command list
+           ============================================================ */
+        .command-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .command-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: all 0.2s var(--ease);
+        }
+
+        .command-item:hover {
+            border-color: var(--celeste-line);
+            background: var(--surface-2);
+        }
+
+        .command-syntax {
+            flex: 0 0 auto;
+            min-width: 320px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--celeste-bright);
+            background: #0d0d12;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .command-syntax::-webkit-scrollbar { height: 4px; }
+
+        .command-syntax .cmd { color: var(--celeste); }
+        .command-syntax .arg { color: #f6ad55; }
+        .command-syntax .opt { color: var(--text-dim); }
+
+        .command-desc {
+            flex: 1;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+            padding-top: 2px;
+        }
+
+        .command-desc .perm {
+            display: inline-block;
+            margin-top: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            color: var(--text-dim);
+        }
+
+        .command-desc .perm code {
+            font-size: 11.5px;
+            color: var(--gold-bright);
+        }
+
+        /* ============================================================
+           Permissions / Placeholders cards
+           ============================================================ */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            padding: 18px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: all 0.2s var(--ease);
+        }
+
+        .info-card:hover {
+            border-color: var(--celeste-line);
+            background: var(--surface-2);
+        }
+
+        .info-card-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .info-card-key {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--celeste-bright);
+            background: #0d0d12;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .info-card-desc {
+            color: var(--text-muted);
+            font-size: 13.5px;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        .info-card-example {
+            margin: 10px 0 0;
+            padding: 8px 10px;
+            background: #0d0d12;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-dim);
+        }
+
+        .info-card-example .ex-label {
+            color: var(--celeste);
+            font-weight: 600;
+            margin-right: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .info-card-example code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--gold-bright);
+            font-size: 12px;
+        }
+
+        .info-card-desc code {
+            font-size: 0.85em;
+            color: var(--gold-bright);
+        }
+
+        /* Note / callout boxes */
+        .callout {
+            display: flex;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+        }
+
+        .callout-info {
+            background: var(--celeste-soft);
+            border: 1px solid var(--celeste-line);
+            border-left: 3px solid var(--celeste);
+        }
+
+        .callout-warn {
+            background: rgba(244, 207, 61, 0.08);
+            border: 1px solid var(--gold-line);
+            border-left: 3px solid var(--gold);
+        }
+
+        .callout-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .callout-info .callout-icon { color: var(--celeste); }
+        .callout-warn .callout-icon { color: var(--gold); }
+
+        .callout-icon svg { width: 18px; height: 18px; display: block; }
+
+        .callout-body {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.55;
+        }
+
+        .callout-body p { margin: 0; color: var(--text); }
+        .callout-body strong { color: var(--text); }
+
+        .callout-info .callout-body strong { color: var(--celeste-bright); }
+        .callout-warn .callout-body strong { color: var(--gold-bright); }
+
+        /* ============================================================
+           Accordion (details/summary)
+           ============================================================ */
+        .accordion {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin: 14px 0 20px;
+            overflow: hidden;
+            transition: border-color 0.2s var(--ease);
+        }
+
+        .accordion[open] { border-color: var(--celeste-line); }
+
+        .accordion summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+            list-style: none;
+            user-select: none;
+            transition: background 0.2s var(--ease);
+        }
+
+        .accordion summary::-webkit-details-marker { display: none; }
+
+        .accordion summary::after {
+            content: '';
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-right: 2px solid var(--celeste);
+            border-bottom: 2px solid var(--celeste);
+            transform: rotate(-45deg);
+            transition: transform 0.25s var(--ease);
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+
+        .accordion[open] summary::after { transform: rotate(45deg); }
+
+        .accordion summary:hover { background: var(--surface-2); }
+
+        .accordion-body {
+            padding: 0 20px 20px;
+        }
+
+        .accordion-body .code-block { margin: 0; border-radius: var(--radius-sm); }
+
+        /* Config subsection nav chips */
+        .config-toc {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 32px;
+        }
+
+        .config-toc-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            align-self: center;
+            padding-right: 8px;
+            border-right: 1px solid var(--border);
+        }
+
+        .config-toc a {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 5px 10px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            transition: all 0.2s var(--ease);
+        }
+
+        .config-toc a:hover {
+            color: var(--celeste);
+            border-color: var(--celeste-line);
+            background: var(--celeste-soft);
+        }
+
+        /* Config subsection card */
+        .config-subsection {
+            padding: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            scroll-margin-top: 24px;
+        }
+
+        .config-subsection h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .config-subsection h3 .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: var(--celeste-soft);
+            border: 1px solid var(--celeste-line);
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--celeste);
+        }
+
+        .config-subsection h3 .ico {
+            color: var(--celeste);
+            display: inline-flex;
+        }
+
+        .config-subsection h3 .ico svg { width: 18px; height: 18px; }
+
+        .config-subsection p { font-size: 14.5px; }
+
+        /* Console log block (special, monospace, no copy button) */
+        .console-block {
+            background: #0d0d12;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--gold);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin: 16px 0 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--gold-bright);
+            overflow-x: auto;
+            box-shadow: var(--shadow-md);
+        }
+
+        .console-block .log-divider { color: var(--text-dim); }
+        .console-block .log-tag { color: var(--celeste-bright); font-weight: 600; }
+        .console-block .log-num { color: var(--gold); font-weight: 600; }
+        .console-block .log-info { color: var(--text-muted); }
+
+        /* Mobile nav toggle */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 200;
+            width: 44px;
+            height: 44px;
+            background: var(--surface-2);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            color: var(--text);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-nav-toggle svg { width: 22px; height: 22px; }
+
+        /* ============================================================
+           Responsive
+           ============================================================ */
+        @media (max-width: 1024px) {
+            .feature-grid, .info-grid { grid-template-columns: 1fr; }
+            .command-syntax { min-width: 0; flex: 1 1 100%; }
+            .command-item { flex-direction: column; }
+        }
+
+        @media (max-width: 860px) {
+            .mobile-nav-toggle { display: inline-flex; }
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s var(--ease);
+                width: 280px;
+                box-shadow: var(--shadow-lg);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; padding: 24px 20px 80px; }
+            .topbar { margin-bottom: 28px; }
+            .hero { padding: 36px 24px; }
+            .hero h1 { font-size: 38px; }
+            .hero-subtitle { font-size: 16px; }
+            h1.section-title { font-size: 30px; }
+            .config-subsection { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 30px; }
+            .hero-cta .btn { flex: 1 1 100%; justify-content: center; }
+            .topbar-links { display: none; }
+        }
+
+        /* Backdrop for mobile sidebar */
+        .backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 99;
+        }
+
+        .backdrop.show {
+            display: block;
+            animation: fadeIn 0.2s var(--ease);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Mobile nav toggle -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="backdrop" id="backdrop"></div>
+
+    <!-- ============================================================
+         Sidebar
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-wrap">
+                <img src="portada.png" alt="Auric Network">
+            </div>
+            <h1 class="sidebar-title"><span class="accent-gold">Auric</span> <span class="accent-celeste">Network</span></h1>
+            <p class="sidebar-subtitle">Official Wiki</p>
+            <span class="version-badge">Zero-Proxy</span>
+        </div>
+
+        <div class="nav-section-label">Documentation</div>
+        <ul class="nav-list">
+            <li>
+                <button class="nav-btn active" data-target="overview">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    </span>
+                    Overview
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="features">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                    </span>
+                    Features
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="commands">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                    </span>
+                    Commands
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="permissions">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
+                    Permissions
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="configuration">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                    </span>
+                    Configuration
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="welcome">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </span>
+                    Welcome System
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="hotbar">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="9" width="20" height="6" rx="1"/><line x1="6.5" y1="9" x2="6.5" y2="15"/><line x1="11" y1="9" x2="11" y2="15"/><line x1="15.5" y1="9" x2="15.5" y2="15"/></svg>
+                    </span>
+                    Hotbar
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="announcements">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg>
+                    </span>
+                    Announcements
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="maintenance">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                    </span>
+                    Maintenance
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="placeholders">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    </span>
+                    Placeholders
+                </button>
+            </li>
+            <li>
+                <button class="nav-btn" data-target="rescue">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </span>
+                    Rescue Server
+                </button>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">
+                Need help? Join our <a href="https://discord.gg/GJRXZk8jEn" target="_blank" rel="noopener">Discord community</a>.<br>
+                © Auric. All rights reserved.
+            </p>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         Main
+         ============================================================ -->
+    <main class="main">
+        <div class="content">
+
+            <!-- Topbar -->
+            <div class="topbar">
+                <div class="breadcrumb">
+                    <span>Auric Network</span>
+                    <svg class="sep" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span class="crumb-current" id="crumbCurrent">Overview</span>
+                </div>
+                <div class="topbar-links">
+                    <a href="https://modrinth.com/plugin/auricnetwork" class="topbar-link" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                        Modrinth
+                    </a>
+                    <a href="https://discord.gg/GJRXZk8jEn" class="topbar-link" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                        Discord
+                    </a>
+                    <a href="https://youtube.com/@midasyt.?si=HLdUw3wF6SHtV8cE" class="topbar-link" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        YouTube
+                    </a>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 Overview
+                 ============================================================ -->
+            <section class="section active" id="overview">
+                <div class="hero">
+                    <div class="hero-eyebrow">
+                        <span class="dot"></span>
+                        Official Documentation
+                    </div>
+                    <h1><span class="accent-gold">Auric</span> <span class="accent-celeste">Network</span></h1>
+                    <p class="hero-subtitle">Zero-Proxy Network System for Minecraft servers.</p>
+                    <span class="hero-tagline">
+                        <span class="tag-gold">No BungeeCord</span>
+                        <span class="tag-sep">·</span>
+                        <span class="tag-celeste">No Velocity</span>
+                        <span class="tag-sep">·</span>
+                        <span class="tag-gold">Native Transfers</span>
+                    </span>
+                    <p class="hero-description">
+                        AuricNetwork allows you to create a full Minecraft server network <strong>without any proxy</strong> (BungeeCord, Velocity). It uses Paper's native <code>Player#transfer</code> method (1.20.5+) to move players directly between servers.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="https://modrinth.com/plugin/auricnetwork" class="btn btn-primary" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1.6 14.4l-3.6-3.6 1.4-1.4 2.2 2.2 5.2-5.2 1.4 1.4-6.6 6.6z"/></svg>
+                            Download on Modrinth
+                        </a>
+                        <a href="https://discord.gg/GJRXZk8jEn" class="btn btn-discord" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                            Discord Support
+                        </a>
+                        <a href="https://youtube.com/@midasyt.?si=HLdUw3wF6SHtV8cE" class="btn btn-youtube" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            YouTube Channel
+                        </a>
+                    </div>
+                </div>
+
+                <div class="callout callout-warn">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p><strong>Important:</strong> On the target server, you must set <code>accepts-transfers=true</code> in its <code>server.properties</code> file for the transfers to work.</p>
+                    </div>
+                </div>
+
+                <p class="section-eyebrow">At a glance</p>
+                <h2 class="section-title">Everything you need to know</h2>
+                <p class="section-lead">
+                    Whether you're linking two survival servers or building a full lobby-based network, this wiki covers every feature, command, permission, and configuration option AuricNetwork has to offer.
+                </p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+                        <p class="feature-title">No Proxy Required</p>
+                        <p class="feature-desc">Direct server-to-server transfers using Paper's native <code>Player#transfer()</code> method. No BungeeCord, no Velocity.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+                        <p class="feature-title">Graphical Server Selector</p>
+                        <p class="feature-desc">Fully customizable chest GUI with player head, online player count and server status placeholders.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                        <p class="feature-title">Rescue Server (Fallback)</p>
+                        <p class="feature-desc">On graceful shutdown, all online players are automatically moved to a configured rescue server. Console logs detail the transfer.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></div>
+                        <p class="feature-title">Multi-Lobby Balancing</p>
+                        <p class="feature-desc"><code>/lobby</code> can send players to a random lobby from a list — ideal for large networks.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Features
+                 ============================================================ -->
+            <section class="section" id="features">
+                <p class="section-eyebrow">Capabilities</p>
+                <h1 class="section-title">Key <span class="accent-celeste">Features</span></h1>
+                <p class="section-lead">
+                    A complete toolkit to run a multi-server Minecraft network without the overhead of a proxy layer.
+                </p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+                        <p class="feature-title">No Proxy Required</p>
+                        <p class="feature-desc">Direct server-to-server transfers using <code>Player#transfer()</code>. No BungeeCord or Velocity needed.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+                        <p class="feature-title">Graphical Server Selector</p>
+                        <p class="feature-desc">Fully customizable chest GUI with player head, online player count and server status placeholders.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                        <p class="feature-title">Rescue Server (Fallback)</p>
+                        <p class="feature-desc">On graceful shutdown, all online players are automatically moved to a configured rescue server. Console logs detail the transfer.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></div>
+                        <p class="feature-title">Multi-Lobby Balancing</p>
+                        <p class="feature-desc"><code>/lobby</code> can send players to a random lobby from a list — ideal for large networks.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+                        <p class="feature-title">Join &amp; Respawn Spawns</p>
+                        <p class="feature-desc">Set teleport locations for join and respawn events, so players always land where you want them.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h2l2 7 4-14 2 7h4"/></svg></div>
+                        <p class="feature-title">Live Server Status</p>
+                        <p class="feature-desc">Fetches real-time online players and online/offline/full status via <code>api.mcsrvstat.us</code>.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                        <p class="feature-title">Rank-Based Welcome</p>
+                        <p class="feature-desc">Title, subtitle, chat, action bar, sound, fireworks and a damage-free lightning strike — all tied to numeric rank permissions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="9" width="20" height="6" rx="1"/><line x1="6.5" y1="9" x2="6.5" y2="15"/><line x1="11" y1="9" x2="11" y2="15"/><line x1="15.5" y1="9" x2="15.5" y2="15"/></svg></div>
+                        <p class="feature-title">Protected Hotbar Items</p>
+                        <p class="feature-desc">Give players configurable items on join with click actions and drop/move/pickup/swap protection.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg></div>
+                        <p class="feature-title">Named Announcements</p>
+                        <p class="feature-desc">Broadcast a specific announcement on demand by its id, with per-id permissions and tab-completion.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+                        <p class="feature-title">Maintenance Mode</p>
+                        <p class="feature-desc">Take any server out of rotation — transfer attempts are rejected with a message instead of failing silently.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="18" cy="7" r="3"/></svg></div>
+                        <p class="feature-title">Party System</p>
+                        <p class="feature-desc">Invite, accept, kick and disband — when the leader transfers servers, the whole party follows automatically.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Commands
+                 ============================================================ -->
+            <section class="section" id="commands">
+                <p class="section-eyebrow">Reference</p>
+                <h1 class="section-title">Commands</h1>
+                <p class="section-lead">
+                    Every subcommand below also works directly under <code>/auricnetwork</code> (e.g. <code>/auricnetwork server survival</code>, <code>/auricnetwork party invite Steve</code>). The standalone commands like <code>/server</code>, <code>/spawn</code>, <code>/lobby</code> and <code>/party</code> keep working exactly the same.
+                </p>
+
+                <div class="command-list">
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/auricnetwork reload</span></div>
+                        <div class="command-desc">
+                            Reloads the config and language files, along with every internal system (welcome, hotbar, queue, bossbar, actionbar...).
+                            <span class="perm">Permission: <code>auricnetwork.command.reload</code></span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/auricnetwork status</span></div>
+                        <div class="command-desc">
+                            Lists every server in the network with its live status, online/max player count, and a maintenance tag when applicable.
+                            <span class="perm">Permission: <code>auricnetwork.command.status</code></span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/auricnetwork announce</span> <span class="arg">&lt;id&gt;</span></div>
+                        <div class="command-desc">
+                            Broadcasts a named announcement from <code>config.yml</code> by its id. Tab-completes with the announcement ids you're allowed to run.
+                            <span class="perm">Permission: <code>auricnetwork.command.announce</code> (any id) or <code>auricnetwork.command.announce.&lt;id&gt;</code> (a single id)</span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/auricnetwork menu</span></div>
+                        <div class="command-desc">
+                            Opens the server selector GUI.
+                            <span class="perm">Permission: <code>auricnetwork.command.menu</code></span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/auricnetwork setjoinspawn</span></div>
+                        <div class="command-desc">
+                            Sets the join spawn at your current location.
+                            <span class="perm">Permission: <code>auricnetwork.command.setjoinspawn</code></span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/auricnetwork setrespawnspawn</span></div>
+                        <div class="command-desc">
+                            Sets the respawn spawn at your current location.
+                            <span class="perm">Permission: <code>auricnetwork.command.setrespawnspawn</code></span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/server</span> <span class="arg">&lt;name&gt;</span> <span class="opt">[player]</span></div>
+                        <div class="command-desc">
+                            Transfers you to another server. With a second argument, transfers a different online player instead.
+                            <span class="perm">Permission: <code>auricnetwork.command.server</code> (self) or <code>auricnetwork.command.server-others</code> (other players)</span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/spawn</span> <span class="opt">[join|respawn]</span></div>
+                        <div class="command-desc">
+                            Teleports to the configured spawn point. Defaults to the join spawn if no argument is given.
+                            <span class="perm">Permission: <code>auricnetwork.command.spawn</code> (both) or <code>auricnetwork.command.spawn.join</code> / <code>auricnetwork.command.spawn.respawn</code> (individually)</span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/lobby</span> <span class="opt">or</span> <span class="cmd">/hub</span></div>
+                        <div class="command-desc">
+                            Sends you to the lobby (supports random or least-players balancing).
+                            <span class="perm">Permission: <code>auricnetwork.command.lobby</code></span>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-syntax"><span class="cmd">/party</span> <span class="arg">&lt;invite|accept|deny|leave|kick|list|disband&gt;</span></div>
+                        <div class="command-desc">
+                            Manages your party — a small group of players who get transferred together when the leader moves to another server.
+                            <ul style="margin:10px 0 0;">
+                                <li><code>invite &lt;player&gt;</code> — sends a party invitation to that player.</li>
+                                <li><code>accept</code> / <code>deny</code> — accepts or rejects the most recent invitation you received.</li>
+                                <li><code>leave</code> — leaves your current party.</li>
+                                <li><code>kick &lt;player&gt;</code> — removes a member from the party (leader only).</li>
+                                <li><code>list</code> — shows everyone currently in your party.</li>
+                                <li><code>disband</code> — dissolves the party entirely (leader only).</li>
+                            </ul>
+                            <span class="perm">Permission: <code>auricnetwork.command.party</code> (all subcommands) or <code>auricnetwork.command.party.&lt;subcommand&gt;</code> (individually, e.g. <code>auricnetwork.command.party.kick</code>)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Permissions
+                 ============================================================ -->
+            <section class="section" id="permissions">
+                <p class="section-eyebrow">Access control</p>
+                <h1 class="section-title">Permissions</h1>
+                <p class="section-lead">
+                    Every command node lives under <code>auricnetwork.command.*</code>. Parent nodes grant every subcommand beneath them, but each subcommand also has its own individual node, so you can remove access to a single feature without touching the rest.
+                </p>
+
+                <div class="callout callout-info">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p><strong>Example:</strong> granting only <code>auricnetwork.command.party.kick</code> lets a player kick party members without giving them the rest of the party commands.</p>
+                    </div>
+                </div>
+
+                <h3>General</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.admin</span>
+                        </div>
+                        <p class="info-card-desc">Parent node for every administrative permission below: reload, announce, status, setjoinspawn, setrespawnspawn and server-others.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.menu</span>
+                        </div>
+                        <p class="info-card-desc">Open the server selector GUI.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.lobby</span>
+                        </div>
+                        <p class="info-card-desc">Use <code>/lobby</code> or <code>/hub</code>.</p>
+                    </div>
+                </div>
+
+                <h3>Server Transfers</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.server</span>
+                        </div>
+                        <p class="info-card-desc">Use <code>/server &lt;name&gt;</code> to transfer yourself.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.server-others</span>
+                        </div>
+                        <p class="info-card-desc">Use <code>/server &lt;name&gt; &lt;player&gt;</code> to transfer someone else. Admin-only by default, kept separate from the regular server node on purpose.</p>
+                    </div>
+                </div>
+
+                <h3>Spawns</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.spawn</span>
+                        </div>
+                        <p class="info-card-desc">Parent node, grants both spawn subcommands below.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.spawn.join</span>
+                        </div>
+                        <p class="info-card-desc">Use <code>/spawn join</code> specifically.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.spawn.respawn</span>
+                        </div>
+                        <p class="info-card-desc">Use <code>/spawn respawn</code> specifically.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.setjoinspawn</span>
+                        </div>
+                        <p class="info-card-desc">Set the join spawn point. Admin-only by default.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.setrespawnspawn</span>
+                        </div>
+                        <p class="info-card-desc">Set the respawn spawn point. Admin-only by default.</p>
+                    </div>
+                </div>
+
+                <h3>Party</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party</span>
+                        </div>
+                        <p class="info-card-desc">Parent node, grants every party subcommand below.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party.invite</span>
+                        </div>
+                        <p class="info-card-desc">Invite players to your party.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party.accept</span>
+                        </div>
+                        <p class="info-card-desc">Accept a pending party invitation.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party.deny</span>
+                        </div>
+                        <p class="info-card-desc">Reject a pending party invitation.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party.leave</span>
+                        </div>
+                        <p class="info-card-desc">Leave your current party.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party.kick</span>
+                        </div>
+                        <p class="info-card-desc">Kick a member from your party (leader only).</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party.list</span>
+                        </div>
+                        <p class="info-card-desc">List your party members.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.party.disband</span>
+                        </div>
+                        <p class="info-card-desc">Disband your party (leader only).</p>
+                    </div>
+                </div>
+
+                <h3>Admin Tools</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.reload</span>
+                        </div>
+                        <p class="info-card-desc">Reload the plugin configuration.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.status</span>
+                        </div>
+                        <p class="info-card-desc">View the network server status list.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.announce</span>
+                        </div>
+                        <p class="info-card-desc">Broadcast any announcement, regardless of id. Grants every node below.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.command.announce.&lt;id&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Broadcast a single named announcement (e.g. <code>auricnetwork.command.announce.discord</code>). Useful for giving a moderator one announcement without the rest.</p>
+                    </div>
+                </div>
+
+                <h3>Welcome System</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.welcome.&lt;number&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Unlocks the welcome rank with that exact numeric key in <code>config.yml</code> (e.g. <code>auricnetwork.welcome.10</code>). There's no separate "permission" field — the number itself is the node.</p>
+                    </div>
+                </div>
+
+                <h3>Queue Priority</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">auricnetwork.queue.&lt;number&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Sets queue priority. Any positive number works — there's no fixed range. The highest number a player has wins.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Configuration
+                 ============================================================ -->
+            <section class="section" id="configuration">
+                <p class="section-eyebrow">Setup</p>
+                <h1 class="section-title">Configuration <span class="accent-celeste">Guide</span></h1>
+                <p class="section-lead">
+                    The <code>config.yml</code> file controls every aspect of AuricNetwork. Below is a detailed explanation of each section.
+                </p>
+
+                <div class="config-toc">
+                    <span class="config-toc-label">Topics</span>
+                    <a href="#cfg-servers">Servers</a>
+                    <a href="#cfg-maintenance">Maintenance Mode</a>
+                    <a href="#cfg-transfer">Transfer Immersion</a>
+                    <a href="#cfg-language">Language</a>
+                    <a href="#cfg-spawns">Join &amp; Respawn Spawn</a>
+                    <a href="#cfg-lobby">Lobby Balancing</a>
+                    <a href="#cfg-status-api">Server Status API</a>
+                </div>
+
+                <!-- 1. Servers -->
+                <div class="config-subsection" id="cfg-servers">
+                    <h3>
+                        <span class="num">1</span>
+                        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></span>
+                        Servers
+                    </h3>
+                    <p>List all servers in your network. The key is the name used in commands and the menu, the value is the <code>IP:port</code> of each server.</p>
+
+                    <details class="accordion">
+                        <summary>View example</summary>
+                        <div class="accordion-body">
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-block-lang">YAML</span>
+                                    <button class="copy-btn" data-copy-target="code-servers">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre id="code-servers"><span class="k">servers</span>:
+  <span class="k">lobby</span>: <span class="s">"127.0.0.1:25565"</span>
+  <span class="k">survival</span>: <span class="s">"127.0.0.1:25566"</span></pre>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 2. Maintenance -->
+                <div class="config-subsection" id="cfg-maintenance">
+                    <h3>
+                        <span class="num">2</span>
+                        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></span>
+                        Maintenance Mode
+                    </h3>
+                    <p>List the servers that should reject incoming transfers. A player trying to <code>/server</code> into one of them stays on their current server and sees a maintenance message instead. This only blocks transfers <em>from this server instance</em> — each server still needs its own AuricNetwork install to enforce it locally.</p>
+
+                    <details class="accordion">
+                        <summary>View example</summary>
+                        <div class="accordion-body">
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-block-lang">YAML</span>
+                                    <button class="copy-btn" data-copy-target="code-maintenance">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre id="code-maintenance"><span class="k">maintenance</span>:
+  <span class="k">enabled</span>: <span class="v">false</span>
+  <span class="k">servers</span>:
+    - <span class="s">"survival"</span></pre>
+                            </div>
+                        </div>
+                    </details>
+
+                    <div class="callout callout-info">
+                        <div class="callout-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        </div>
+                        <div class="callout-body">
+                            <p>The <code>/auricnetwork status</code> command shows a maintenance tag next to any server listed here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Transfer Immersion -->
+                <div class="config-subsection" id="cfg-transfer">
+                    <h3>
+                        <span class="num">3</span>
+                        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+                        Transfer Immersion
+                    </h3>
+                    <p>Adds a short cinematic pause before a player actually leaves for another server, instead of transferring them the instant they run the command.</p>
+
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-card-head">
+                                <span class="info-card-key">delay</span>
+                            </div>
+                            <p class="info-card-desc">How many seconds the player waits before the transfer happens. During this time they stay on the current server and can still move around.</p>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-head">
+                                <span class="info-card-key">sound.sound_id</span>
+                            </div>
+                            <p class="info-card-desc">A Minecraft sound name that plays once per second during the countdown, like a ticking cue that the transfer is coming.</p>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-head">
+                                <span class="info-card-key">sound.fade_out</span>
+                            </div>
+                            <p class="info-card-desc">If enabled, the sound gets quieter each time it repeats, so it fades away by the time the transfer actually happens instead of staying at the same volume.</p>
+                        </div>
+                    </div>
+
+                    <details class="accordion">
+                        <summary>View example</summary>
+                        <div class="accordion-body">
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-block-lang">YAML</span>
+                                    <button class="copy-btn" data-copy-target="code-transfer">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre id="code-transfer"><span class="k">transfer_immersion</span>:
+  <span class="k">delay</span>: <span class="n">3.0</span>
+  <span class="k">sound</span>:
+    <span class="k">enabled</span>: <span class="v">true</span>
+    <span class="k">sound_id</span>: <span class="s">"block.amethyst_block.hit"</span>
+    <span class="k">fade_out</span>: <span class="v">true</span></pre>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 4. Language -->
+                <div class="config-subsection" id="cfg-language">
+                    <h3>
+                        <span class="num">4</span>
+                        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span>
+                        Language
+                    </h3>
+                    <p>Set <code>en</code> (English) or <code>es</code> (Spanish). Leave empty to auto-detect from the player's client locale.</p>
+
+                    <details class="accordion">
+                        <summary>View example</summary>
+                        <div class="accordion-body">
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-block-lang">YAML</span>
+                                    <button class="copy-btn" data-copy-target="code-language">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre id="code-language"><span class="k">language</span>: <span class="s">"en"</span></pre>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 5. Join & Respawn Spawn -->
+                <div class="config-subsection" id="cfg-spawns">
+                    <h3>
+                        <span class="num">5</span>
+                        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></span>
+                        Join &amp; Respawn Spawn
+                    </h3>
+                    <p>Enable and set an exact spot for where players land when they join the server, and a separate one for where they respawn after dying.</p>
+                    <p>Each one needs a <code>world</code> name and an <code>x</code>/<code>y</code>/<code>z</code> position. <code>yaw</code> and <code>pitch</code> are optional and control which direction the player faces when they arrive: <code>yaw</code> is the horizontal direction (which way they're looking left/right), <code>pitch</code> is the vertical tilt (looking up/down).</p>
+
+                    <details class="accordion">
+                        <summary>View example</summary>
+                        <div class="accordion-body">
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-block-lang">YAML</span>
+                                    <button class="copy-btn" data-copy-target="code-spawns">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre id="code-spawns"><span class="k">join_spawn</span>:
+  <span class="k">enabled</span>: <span class="v">false</span>
+  <span class="k">world</span>: <span class="s">"world"</span>
+  <span class="k">x</span>: <span class="n">0.5</span>
+  <span class="k">y</span>: <span class="n">64.0</span>
+  <span class="k">z</span>: <span class="n">0.5</span>
+  <span class="k">yaw</span>: <span class="n">0.0</span>
+  <span class="k">pitch</span>: <span class="n">0.0</span>
+
+<span class="k">respawn_spawn</span>:
+  <span class="k">enabled</span>: <span class="v">false</span>
+  <span class="k">world</span>: <span class="s">"world"</span>
+  <span class="k">x</span>: <span class="n">0.5</span>
+  <span class="k">y</span>: <span class="n">64.0</span>
+  <span class="k">z</span>: <span class="n">0.5</span>
+  <span class="k">yaw</span>: <span class="n">0.0</span>
+  <span class="k">pitch</span>: <span class="n">0.0</span></pre>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 6. Lobby Balancing -->
+                <div class="config-subsection" id="cfg-lobby">
+                    <h3>
+                        <span class="num">6</span>
+                        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></span>
+                        Lobby Balancing
+                    </h3>
+                    <p>If enabled, <code>/lobby</code> picks a server from the list below instead of always going to <code>lobby</code>. This is meant for networks with more than one lobby, so players don't all pile into the same one.</p>
+
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-card-head">
+                                <span class="info-card-key">RANDOM</span>
+                            </div>
+                            <p class="info-card-desc">Picks any server from the list at random, with no regard for how full each one is.</p>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-head">
+                                <span class="info-card-key">LEAST_PLAYERS</span>
+                            </div>
+                            <p class="info-card-desc">Always picks whichever lobby in the list currently has the fewest players, spreading the population evenly.</p>
+                        </div>
+                    </div>
+
+                    <details class="accordion">
+                        <summary>View example</summary>
+                        <div class="accordion-body">
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-block-lang">YAML</span>
+                                    <button class="copy-btn" data-copy-target="code-lobby">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre id="code-lobby"><span class="k">lobby</span>:
+  <span class="k">enabled</span>: <span class="v">false</span>
+  <span class="k">balancing_mode</span>: <span class="s">"RANDOM"</span>
+  <span class="k">servers</span>:
+    - <span class="s">"lobby1"</span>
+    - <span class="s">"lobby2"</span></pre>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 7. Server Status API -->
+                <div class="config-subsection" id="cfg-status-api">
+                    <h3>
+                        <span class="num">7</span>
+                        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h2l2 7 4-14 2 7h4"/></svg></span>
+                        Server Status API
+                    </h3>
+                    <p>Since each server runs in total isolation, AuricNetwork can't ask another server directly "how many players do you have right now?" — there's no shared connection between them. Instead, it periodically asks the public API <code>api.mcsrvstat.us</code>, the same way a website would check if a server is online, and caches the answer until the next check.</p>
+                    <p><code>update_interval_seconds</code> controls how often that check happens. Lower values are more up to date but make more requests to the external API; 30-60 seconds is a reasonable default for most networks.</p>
+
+                    <details class="accordion">
+                        <summary>View example</summary>
+                        <div class="accordion-body">
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-block-lang">YAML</span>
+                                    <button class="copy-btn" data-copy-target="code-status">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre id="code-status"><span class="k">server_status_api</span>:
+  <span class="k">enabled</span>: <span class="v">false</span>
+  <span class="k">update_interval_seconds</span>: <span class="n">60</span></pre>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+            </section>
+
+            <!-- ============================================================
+                 Welcome System
+                 ============================================================ -->
+            <section class="section" id="welcome">
+                <p class="section-eyebrow">First impressions</p>
+                <h1 class="section-title">Welcome <span class="accent-celeste">System</span></h1>
+                <p class="section-lead">
+                    Greet players differently depending on their rank — title, subtitle, chat lines, action bar, sound, a firework, and an optional lightning strike. Everything is configured directly under <code>welcome</code> in <code>config.yml</code>.
+                </p>
+
+                <h3>How rank priority works</h3>
+                <p>Each entry under <code>welcome.ranks</code> is keyed by a number, and that number <strong>is</strong> the permission. An entry keyed <code>"10"</code> requires <code>auricnetwork.welcome.10</code> — there's no separate permission field to fill in. The entry keyed <code>"0"</code> is the default, used when a player doesn't have any other welcome permission. When a player matches more than one rank, the highest number wins.</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p><strong>Tip:</strong> give your highest-priority rank a high number (e.g. <code>50</code> for staff, <code>10</code> for VIP) so you have room to add ranks in between later.</p>
+                    </div>
+                </div>
+
+                <h3>What each rank can configure</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">title</span>
+                        </div>
+                        <p class="info-card-desc">The big text shown in the middle of the player's screen on join, with a smaller subtitle line underneath.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">chat</span>
+                        </div>
+                        <p class="info-card-desc">One or more chat lines, supporting MiniMessage formatting and placeholders.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">actionbar</span>
+                        </div>
+                        <p class="info-card-desc">A short message shown above the hotbar on join.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">sound</span>
+                        </div>
+                        <p class="info-card-desc">Plays a sound effect with configurable id, volume, and pitch.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">effects</span>
+                        </div>
+                        <p class="info-card-desc">An optional firework launch and an optional lightning strike — always visual-only, it never deals damage. See below for the details of each.</p>
+                    </div>
+                </div>
+
+                <h3>Title timing</h3>
+                <p>The title text doesn't just appear and disappear instantly — it fades in, stays on screen, then fades out. Each phase is measured in <strong>ticks</strong>, Minecraft's basic unit of time: there are 20 ticks in one second, so <code>40</code> means 2 seconds.</p>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">fade_in_ticks</span>
+                        </div>
+                        <p class="info-card-desc">How long the title takes to fade into view when it first appears.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">stay_ticks</span>
+                        </div>
+                        <p class="info-card-desc">How long the title stays fully visible on screen before it starts fading out.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">fade_out_ticks</span>
+                        </div>
+                        <p class="info-card-desc">How long the title takes to fade away after the "stay" phase ends.</p>
+                    </div>
+                </div>
+
+                <h3>Firework and lightning</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">firework_enabled</span>
+                        </div>
+                        <p class="info-card-desc">Turns the firework launch on or off for this rank.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">firework_count</span>
+                        </div>
+                        <p class="info-card-desc">How many fireworks are launched at once above the player.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">firework_type</span>
+                        </div>
+                        <p class="info-card-desc">The shape of the firework burst, e.g. <code>BALL</code>, <code>STAR</code>, <code>BURST</code>, or <code>CREEPER</code> — any standard Minecraft firework shape.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">firework_colors</span>
+                        </div>
+                        <p class="info-card-desc">A list of colors for the burst, either by name (e.g. <code>YELLOW</code>) or hex code (e.g. <code>#ff6700</code>). With more than one color, the firework cycles through them.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">lightning_enabled</span>
+                        </div>
+                        <p class="info-card-desc">Strikes lightning at the player's feet on join — purely for show, since it's always the damage-free visual version of the effect.</p>
+                    </div>
+                </div>
+
+                <details class="accordion">
+                    <summary>View example</summary>
+                    <div class="accordion-body">
+                        <div class="code-block">
+                            <div class="code-block-header">
+                                <span class="code-block-lang">YAML</span>
+                                <button class="copy-btn" data-copy-target="code-welcome">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                    Copy
+                                </button>
+                            </div>
+                            <pre id="code-welcome"><span class="k">welcome</span>:
+  <span class="k">enabled</span>: <span class="v">true</span>
+  <span class="k">ranks</span>:
+    <span class="s">"0"</span>:
+      <span class="k">title</span>:
+        <span class="k">enabled</span>: <span class="v">true</span>
+        <span class="k">text</span>: <span class="s">"&lt;gold&gt;Welcome&lt;/gold&gt;"</span>
+        <span class="k">subtitle</span>: <span class="s">"&lt;gray&gt;%player_name%&lt;/gray&gt;"</span>
+        <span class="k">fade_in_ticks</span>: <span class="n">10</span>
+        <span class="k">stay_ticks</span>: <span class="n">70</span>
+        <span class="k">fade_out_ticks</span>: <span class="n">20</span>
+      <span class="k">chat</span>:
+        <span class="k">enabled</span>: <span class="v">true</span>
+        <span class="k">lines</span>:
+          - <span class="s">"&lt;gray&gt;Welcome to the network, %player_name%!&lt;/gray&gt;"</span>
+      <span class="k">actionbar</span>:
+        <span class="k">enabled</span>: <span class="v">false</span>
+        <span class="k">text</span>: <span class="s">"&lt;gray&gt;Welcome!&lt;/gray&gt;"</span>
+      <span class="k">sound</span>:
+        <span class="k">enabled</span>: <span class="v">true</span>
+        <span class="k">sound_id</span>: <span class="s">"entity.player.levelup"</span>
+        <span class="k">volume</span>: <span class="n">1.0</span>
+        <span class="k">pitch</span>: <span class="n">1.0</span>
+      <span class="k">effects</span>:
+        <span class="k">firework_enabled</span>: <span class="v">false</span>
+        <span class="k">firework_count</span>: <span class="n">1</span>
+        <span class="k">firework_type</span>: <span class="s">"BALL"</span>
+        <span class="k">firework_colors</span>:
+          - <span class="s">"YELLOW"</span>
+        <span class="k">lightning_enabled</span>: <span class="v">false</span>
+    <span class="s">"10"</span>:
+      <span class="k">title</span>:
+        <span class="k">enabled</span>: <span class="v">true</span>
+        <span class="k">text</span>: <span class="s">"&lt;gradient:#ff6700:#fdc300&gt;VIP&lt;/gradient&gt;"</span>
+        <span class="k">subtitle</span>: <span class="s">"&lt;gray&gt;Welcome back, %player_name%!&lt;/gray&gt;"</span>
+        <span class="k">fade_in_ticks</span>: <span class="n">10</span>
+        <span class="k">stay_ticks</span>: <span class="n">70</span>
+        <span class="k">fade_out_ticks</span>: <span class="n">20</span>
+      <span class="k">chat</span>:
+        <span class="k">enabled</span>: <span class="v">true</span>
+        <span class="k">lines</span>:
+          - <span class="s">"&lt;gold&gt;A VIP player has joined: %player_name%&lt;/gold&gt;"</span>
+      <span class="k">actionbar</span>:
+        <span class="k">enabled</span>: <span class="v">true</span>
+        <span class="k">text</span>: <span class="s">"&lt;gold&gt;Enjoy your VIP perks, %player_name%!&lt;/gold&gt;"</span>
+      <span class="k">sound</span>:
+        <span class="k">enabled</span>: <span class="v">true</span>
+        <span class="k">sound_id</span>: <span class="s">"entity.player.levelup"</span>
+        <span class="k">volume</span>: <span class="n">1.0</span>
+        <span class="k">pitch</span>: <span class="n">1.2</span>
+      <span class="k">effects</span>:
+        <span class="k">firework_enabled</span>: <span class="v">true</span>
+        <span class="k">firework_count</span>: <span class="n">1</span>
+        <span class="k">firework_type</span>: <span class="s">"STAR"</span>
+        <span class="k">firework_colors</span>:
+          - <span class="s">"#ff6700"</span>
+          - <span class="s">"#fdc300"</span>
+        <span class="k">lightning_enabled</span>: <span class="v">false</span></pre>
+                        </div>
+                    </div>
+                </details>
+
+                <div class="callout callout-warn">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p><strong>Note:</strong> the lightning strike is always a visual-only effect (no damage), so it's safe to enable around other players.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Hotbar
+                 ============================================================ -->
+            <section class="section" id="hotbar">
+                <p class="section-eyebrow">Quick access</p>
+                <h1 class="section-title">Hotbar <span class="accent-celeste">Items</span></h1>
+                <p class="section-lead">
+                    Give players configurable items in their hotbar the moment they join — a compass to open the server selector, a nether star to return to the lobby, or anything else you can imagine. Configured under <code>hotbar</code> in <code>config.yml</code>.
+                </p>
+
+                <h3>Item options</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">slot</span>
+                        </div>
+                        <p class="info-card-desc">Hotbar slot (0-8) where the item is placed.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">material, name, lore</span>
+                        </div>
+                        <p class="info-card-desc">Item material, display name and lore, all supporting MiniMessage and placeholders.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">glow</span>
+                        </div>
+                        <p class="info-card-desc">Adds an enchantment glow effect to the item.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">actions</span>
+                        </div>
+                        <p class="info-card-desc">A list of one or more actions that run when a player clicks while holding the item. See the full list of available actions below.</p>
+                    </div>
+                </div>
+
+                <h3>Available actions</h3>
+                <p>Use any of these as a line under <code>actions</code>. You can combine several in the same list — for example, play a sound and then transfer the player.</p>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">transfer:&lt;server&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Sends the player to the named server, the same as typing <code>/server &lt;server&gt;</code>.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>transfer:survival</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">command:&lt;cmd&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Runs a command as the player, exactly as if they had typed it themselves (their own permissions apply).</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>command:spawn</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">console_command:&lt;cmd&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Runs a command from the server console instead of the player, useful for commands the player normally can't run themselves.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>console_command:eco give %player_name% 100</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">op_command:&lt;cmd&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Temporarily grants the player operator status, runs the command as them, then immediately removes it. Useful for a single privileged command without permanently OP'ing anyone.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>op_command:gamemode creative</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">message:&lt;text&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Sends a chat message to the player, formatted with MiniMessage (e.g. <code>&lt;gold&gt;</code> for color) and placeholders.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>message:&lt;green&gt;Teleporting you now!&lt;/green&gt;</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">sound:&lt;id&gt;,&lt;volume&gt;,&lt;pitch&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Plays a sound to the player. <code>id</code> is a Minecraft sound name (e.g. <code>block.note_block.pling</code>), <code>volume</code> and <code>pitch</code> are both decimal numbers, typically between <code>0.5</code> and <code>2.0</code>.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>sound:entity.experience_orb.pickup,1.0,1.5</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">open:&lt;menu&gt;</span>
+                        </div>
+                        <p class="info-card-desc">Opens one of your configured GUI menus by its id, the same menu system used by <code>/auricnetwork menu</code>.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>open:kits</code></div>
+                    </div>
+                </div>
+
+                <h3>Protection options</h3>
+                <p>All four default to <code>true</code>, so a hotbar item is fully protected unless you explicitly turn an option off.</p>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">prevent_drop</span>
+                        </div>
+                        <p class="info-card-desc">Prevents dropping the item on the ground with the Q key or by dragging it out of the inventory.</p>
+                        <div class="info-card-example"><span class="ex-label">When to disable</span>You're giving out a consumable item, like a one-time teleport scroll meant to be tradeable.</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">prevent_move</span>
+                        </div>
+                        <p class="info-card-desc">Prevents dragging the item to another slot in the player's own inventory or into a chest, hopper, or any other container.</p>
+                        <div class="info-card-example"><span class="ex-label">When to disable</span>You want players to be able to reorganize their hotbar freely.</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">prevent_pickup</span>
+                        </div>
+                        <p class="info-card-desc">If the item somehow ends up on the ground anyway, this stops any player from picking it back up.</p>
+                        <div class="info-card-example"><span class="ex-label">When to disable</span>Combined with <code>prevent_drop: false</code>, so the item can be dropped and picked up again normally.</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">prevent_swap</span>
+                        </div>
+                        <p class="info-card-desc">Prevents pressing F to swap the item between the main hand and the off hand.</p>
+                        <div class="info-card-example"><span class="ex-label">When to disable</span>The item is meant to be held alongside a weapon or tool in the other hand.</div>
+                    </div>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p>An item with all four protections gives players nothing they can do with it except trigger its actions — they can't lose it, drop it, or move it out of its slot. This also covers item frames: a protected item can't be placed into one as a workaround to free it. Disabling <code>hotbar.enabled</code> entirely lifts every protection on every item.</p>
+                    </div>
+                </div>
+
+                <details class="accordion">
+                    <summary>View example</summary>
+                    <div class="accordion-body">
+                        <div class="code-block">
+                            <div class="code-block-header">
+                                <span class="code-block-lang">YAML</span>
+                                <button class="copy-btn" data-copy-target="code-hotbar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                    Copy
+                                </button>
+                            </div>
+                            <pre id="code-hotbar"><span class="k">hotbar</span>:
+  <span class="k">enabled</span>: <span class="v">true</span>
+  <span class="k">items</span>:
+    <span class="k">selector</span>:
+      <span class="k">slot</span>: <span class="n">4</span>
+      <span class="k">material</span>: <span class="s">"COMPASS"</span>
+      <span class="k">name</span>: <span class="s">"&lt;gold&gt;Server Selector&lt;/gold&gt;"</span>
+      <span class="k">lore</span>:
+        - <span class="s">"&lt;gray&gt;Right click to open the menu&lt;/gray&gt;"</span>
+      <span class="k">glow</span>: <span class="v">false</span>
+      <span class="k">prevent_drop</span>: <span class="v">true</span>
+      <span class="k">prevent_move</span>: <span class="v">true</span>
+      <span class="k">prevent_pickup</span>: <span class="v">true</span>
+      <span class="k">prevent_swap</span>: <span class="v">true</span>
+      <span class="k">actions</span>:
+        - <span class="s">"open:selector"</span>
+    <span class="k">lobby_item</span>:
+      <span class="k">slot</span>: <span class="n">8</span>
+      <span class="k">material</span>: <span class="s">"NETHER_STAR"</span>
+      <span class="k">name</span>: <span class="s">"&lt;yellow&gt;Lobby&lt;/yellow&gt;"</span>
+      <span class="k">lore</span>:
+        - <span class="s">"&lt;gray&gt;Right click to return to the lobby&lt;/gray&gt;"</span>
+      <span class="k">glow</span>: <span class="v">true</span>
+      <span class="k">prevent_drop</span>: <span class="v">true</span>
+      <span class="k">prevent_move</span>: <span class="v">true</span>
+      <span class="k">prevent_pickup</span>: <span class="v">true</span>
+      <span class="k">prevent_swap</span>: <span class="v">true</span>
+      <span class="k">actions</span>:
+        - <span class="s">"transfer:lobby"</span></pre>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+            <!-- ============================================================
+                 Announcements
+                 ============================================================ -->
+            <section class="section" id="announcements">
+                <p class="section-eyebrow">Broadcasting</p>
+                <h1 class="section-title"><span class="accent-celeste">Named</span> Announcements</h1>
+                <p class="section-lead">
+                    Instead of a rotating list of messages, every announcement has its own id, its own lines, and is sent on demand with a command. Configured under <code>announcements.list</code> in <code>config.yml</code>.
+                </p>
+
+                <h3>How announcement permissions work</h3>
+                <p>There's no <code>permission</code> field to fill in for each announcement. Instead, every id automatically requires its own node: <code>auricnetwork.command.announce.&lt;id&gt;</code>. A player with the parent <code>auricnetwork.command.announce</code> can run any announcement; a player with only <code>auricnetwork.command.announce.discord</code> can only run that one.</p>
+
+                <details class="accordion">
+                    <summary>View example</summary>
+                    <div class="accordion-body">
+                        <div class="code-block">
+                            <div class="code-block-header">
+                                <span class="code-block-lang">YAML</span>
+                                <button class="copy-btn" data-copy-target="code-announcements">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                    Copy
+                                </button>
+                            </div>
+                            <pre id="code-announcements"><span class="k">announcements</span>:
+  <span class="k">list</span>:
+    <span class="k">welcome_network</span>:
+      <span class="k">lines</span>:
+        - <span class="s">"&lt;yellow&gt;Welcome to our network!&lt;/yellow&gt;"</span>
+    <span class="k">discord</span>:
+      <span class="k">lines</span>:
+        - <span class="s">"&lt;aqua&gt;Join our Discord: discord.gg/example&lt;/aqua&gt;"</span>
+    <span class="k">vote</span>:
+      <span class="k">lines</span>:
+        - <span class="s">"&lt;green&gt;Vote for us daily to get rewards!&lt;/green&gt;"</span>
+    <span class="k">staff_only</span>:
+      <span class="k">lines</span>:
+        - <span class="s">"&lt;red&gt;This is a staff-only announcement example.&lt;/red&gt;"</span></pre>
+                        </div>
+                    </div>
+                </details>
+
+                <p>Run it with <code>/auricnetwork announce &lt;id&gt;</code> — for example, <code>/auricnetwork announce discord</code> broadcasts the <code>discord</code> entry above to every online player. The command tab-completes with whichever ids you have permission to run.</p>
+
+                <div class="callout callout-warn">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p><strong>Note:</strong> announcements only broadcast on the server where the command is run. There's no automatic rotation anymore — schedule them externally (e.g. a server-side timer or cron) if you want periodic announcements.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Maintenance (top-level overview)
+                 ============================================================ -->
+            <section class="section" id="maintenance">
+                <p class="section-eyebrow">Network control</p>
+                <h1 class="section-title">Maintenance <span class="accent-celeste">Mode</span></h1>
+                <p class="section-lead">
+                    Take a server out of rotation without shutting it down. Players already connected elsewhere simply can't transfer into it.
+                </p>
+
+                <p>Add the server's name to <code>maintenance.servers</code> in <code>config.yml</code> and set <code>maintenance.enabled</code> to <code>true</code>. Any <code>/server</code> attempt targeting that server — by a player or sent by an admin — is rejected with a message, and the player stays exactly where they were.</p>
+
+                <details class="accordion">
+                    <summary>View example</summary>
+                    <div class="accordion-body">
+                        <div class="code-block">
+                            <div class="code-block-header">
+                                <span class="code-block-lang">YAML</span>
+                                <button class="copy-btn" data-copy-target="code-maintenance-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                    Copy
+                                </button>
+                            </div>
+                            <pre id="code-maintenance-2"><span class="k">maintenance</span>:
+  <span class="k">enabled</span>: <span class="v">true</span>
+  <span class="k">servers</span>:
+    - <span class="s">"survival"</span></pre>
+                        </div>
+                    </div>
+                </details>
+
+                <h3>What happens with the queue</h3>
+                <p>Maintenance is checked before the queue. A server under maintenance always rejects the transfer outright — it never places the player in a queue, even if the queue system is enabled.</p>
+
+                <h3>A full server without maintenance</h3>
+                <p>This is a separate case worth knowing about: if a server is simply <strong>full</strong> (not in maintenance) and the queue system is enabled, the player is placed in a queue automatically. If the queue is disabled, the player is rejected immediately with a "server is full" message instead of waiting indefinitely.</p>
+
+                <h3>Checking maintenance status</h3>
+                <p>Run <code>/auricnetwork status</code> to see every server in the network along with a maintenance tag next to any server currently listed in <code>maintenance.servers</code>.</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p>Like everything else in AuricNetwork, maintenance mode is local to each server instance. Enabling it on your lobby's <code>config.yml</code> only blocks transfers <em>initiated from the lobby</em> — if you want the survival server itself to also reject transfers coming from elsewhere, set it in survival's own <code>config.yml</code> too.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Placeholders
+                 ============================================================ -->
+            <section class="section" id="placeholders">
+                <p class="section-eyebrow">Dynamic text</p>
+                <h1 class="section-title">Placeholders</h1>
+                <p class="section-lead">
+                    AuricNetwork resolves its own placeholders internally — they work in announcements, the welcome system, the hotbar, the menu, the bossbar and the actionbar, even without PlaceholderAPI installed. If PlaceholderAPI <em>is</em> installed, the same placeholders are also registered as a normal PlaceholderAPI expansion under two identifiers: <code>%auricnetwork_*%</code> and the shorter <code>%an_*%</code>.
+                </p>
+
+                <div class="callout callout-info">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p>Inside AuricNetwork's own configuration files (menu, hotbar, welcome, announcements...) you can use the short form without any prefix too, e.g. <code>%total_online%</code> instead of <code>%auricnetwork_total_online%</code>.</p>
+                    </div>
+                </div>
+
+                <h3>Network-wide</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_total_online%</span>
+                        </div>
+                        <p class="info-card-desc">Total online players across every server in the network.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>&lt;green&gt;%auricnetwork_total_online% online&lt;/green&gt;</code> → <code>47 online</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_current_server%</span>
+                        </div>
+                        <p class="info-card-desc">The name of the server this placeholder is resolved on, as set in <code>current_server_name</code>.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span>On the survival server, resolves to <code>survival</code>.</div>
+                    </div>
+                </div>
+
+                <h3>Per-server</h3>
+                <p>Replace <code>&lt;server&gt;</code> with any server name from your <code>servers</code> list.</p>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_online_&lt;server&gt;%</span>
+                        </div>
+                        <p class="info-card-desc">Online player count for that server. Uses the real local count for the current server, and <code>api.mcsrvstat.us</code> for any other.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>%auricnetwork_online_survival%</code> → <code>12</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_max_&lt;server&gt;%</span>
+                        </div>
+                        <p class="info-card-desc">Maximum player slots for that server, as reported by the status API.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>%auricnetwork_online_survival%/%auricnetwork_max_survival%</code> → <code>12/100</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_status_&lt;server&gt;%</span>
+                        </div>
+                        <p class="info-card-desc">Plain-text status: Online, Offline, or Full — using your configured language file.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>Status: %auricnetwork_status_survival%</code> → <code>Status: Online</code></div>
+                    </div>
+                </div>
+
+                <h3>Queue</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_queue_position%</span>
+                        </div>
+                        <p class="info-card-desc">The player's current position in their queue, or <code>0</code> if they're not queued.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>You are #%auricnetwork_queue_position% in line</code> → <code>You are #3 in line</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_queue_server%</span>
+                        </div>
+                        <p class="info-card-desc">The server name the player is currently queued for, or empty if none.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>Waiting for %auricnetwork_queue_server%</code> → <code>Waiting for survival</code></div>
+                    </div>
+                </div>
+
+                <h3>Party</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_party_size%</span>
+                        </div>
+                        <p class="info-card-desc">Number of members in the player's current party.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>Party: %auricnetwork_party_size% members</code> → <code>Party: 4 members</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_party_leader%</span>
+                        </div>
+                        <p class="info-card-desc">Name of the player's party leader, or empty if not in a party.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span><code>Leader: %auricnetwork_party_leader%</code> → <code>Leader: Steve</code></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-key">%auricnetwork_in_party%</span>
+                        </div>
+                        <p class="info-card-desc">Returns <code>yes</code> or <code>no</code> depending on whether the player is in a party.</p>
+                        <div class="info-card-example"><span class="ex-label">Example</span>Useful for a Vault/PlaceholderAPI condition like hiding a tag when the value equals <code>no</code>.</div>
+                    </div>
+                </div>
+
+                <div class="callout callout-warn">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p><strong>Note:</strong> per-server placeholders for a server other than the current one rely on <code>api.mcsrvstat.us</code>, which can't reach servers running on a local network or behind a firewall. They work reliably for publicly reachable servers.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 Rescue Server
+                 ============================================================ -->
+            <section class="section" id="rescue">
+                <p class="section-eyebrow">Fallback</p>
+                <h1 class="section-title">Rescue <span class="accent-celeste">Server</span></h1>
+                <p class="section-lead">
+                    When a server shuts down gracefully (e.g., <code>/stop</code> or a restart), AuricNetwork automatically transfers all online players to a configured rescue server. This prevents disconnections and improves user experience.
+                </p>
+
+                <p>The fallback logs a detailed message to the console:</p>
+
+                <div class="console-block">
+<span class="log-divider">========================================</span>
+[<span class="log-tag">AuricNetwork</span>] Rescue server active!
+Transferred <span class="log-num">12</span> players to lobby (127.0.0.1:25565)
+<span class="log-info">Server is shutting down gracefully.</span>
+<span class="log-divider">========================================</span>
+                </div>
+
+                <p>To enable it, add the following to your <code>config.yml</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-lang">YAML</span>
+                        <button class="copy-btn" data-copy-target="code-rescue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                            Copy
+                        </button>
+                    </div>
+                    <pre id="code-rescue"><span class="k">rescue_server</span>:
+  <span class="k">enabled</span>: <span class="v">true</span>
+  <span class="k">target</span>: <span class="s">"lobby"</span></pre>
+                </div>
+
+                <h3>Fallback list</h3>
+                <p><code>target</code> is where everyone goes first. If you also want a backup plan, enable <code>fallback_list_enabled</code> and list extra servers under <code>fallback_list</code> — AuricNetwork will also send any player still online through each one of them, in order, right after the main target.</p>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-lang">YAML</span>
+                        <button class="copy-btn" data-copy-target="code-rescue-fallback">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                            Copy
+                        </button>
+                    </div>
+                    <pre id="code-rescue-fallback"><span class="k">rescue_server</span>:
+  <span class="k">enabled</span>: <span class="v">true</span>
+  <span class="k">target</span>: <span class="s">"lobby"</span>
+  <span class="k">fallback_list_enabled</span>: <span class="v">true</span>
+  <span class="k">fallback_list</span>:
+    - <span class="s">"lobby2"</span>
+    - <span class="s">"lobby3"</span></pre>
+                </div>
+
+                <div class="callout callout-warn">
+                    <div class="callout-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div class="callout-body">
+                        <p><strong>Note:</strong> Works only on controlled shutdowns (not on crashes or <code>kill -9</code>).</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // ============================================================
+        // Navigation between sections
+        // ============================================================
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.section');
+        const crumbCurrent = document.getElementById('crumbCurrent');
+        const sectionLabels = {
+            overview: 'Overview',
+            features: 'Features',
+            commands: 'Commands',
+            permissions: 'Permissions',
+            configuration: 'Configuration',
+            welcome: 'Welcome System',
+            hotbar: 'Hotbar',
+            announcements: 'Announcements',
+            maintenance: 'Maintenance',
+            placeholders: 'Placeholders',
+            rescue: 'Rescue Server'
+        };
+
+        function switchSection(targetId, btn) {
+            sections.forEach(s => s.classList.remove('active'));
+            navButtons.forEach(b => b.classList.remove('active'));
+
+            const target = document.getElementById(targetId);
+            if (target) target.classList.add('active');
+            if (btn) btn.classList.add('active');
+
+            if (crumbCurrent) crumbCurrent.textContent = sectionLabels[targetId] || targetId;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            closeMobileNav();
+        }
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.dataset.target;
+                switchSection(target, btn);
+            });
+        });
+
+        // ============================================================
+        // Mobile nav toggle
+        // ============================================================
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+        const mobileToggle = document.getElementById('mobileNavToggle');
+
+        function openMobileNav() {
+            sidebar.classList.add('open');
+            backdrop.classList.add('show');
+        }
+
+        function closeMobileNav() {
+            sidebar.classList.remove('open');
+            backdrop.classList.remove('show');
+        }
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                sidebar.classList.contains('open') ? closeMobileNav() : openMobileNav();
+            });
+        }
+
+        if (backdrop) {
+            backdrop.addEventListener('click', closeMobileNav);
+        }
+
+        // ============================================================
+        // Copy to clipboard for code blocks
+        // ============================================================
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const targetId = btn.dataset.copyTarget;
+                const pre = document.getElementById(targetId);
+                if (!pre) return;
+
+                const text = pre.innerText;
+
+                try {
+                    await navigator.clipboard.writeText(text);
+
+                    const originalHTML = btn.innerHTML;
+                    btn.classList.add('copied');
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = originalHTML;
+                    }, 1800);
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                }
+            });
+        });
+
+        // ============================================================
+        // Smooth scroll for config TOC links
+        // ============================================================
+        document.querySelectorAll('.config-toc a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ============================================================
+        // Keyboard shortcut: number keys 1-6 to switch sections
+        // ============================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            const keyMap = {
+                '1': 'overview',
+                '2': 'features',
+                '3': 'commands',
+                '4': 'permissions',
+                '5': 'configuration',
+                '6': 'welcome',
+                '7': 'hotbar',
+                '8': 'announcements',
+                '9': 'maintenance',
+                '0': 'placeholders'
+            };
+            const target = keyMap[e.key];
+            if (target) {
+                const btn = document.querySelector(`.nav-btn[data-target="${target}"]`);
+                if (btn) switchSection(target, btn);
+            }
+        });
+    </script>
+</body>
+</html>
